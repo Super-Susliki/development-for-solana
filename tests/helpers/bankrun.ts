@@ -1,0 +1,90 @@
+import * as anchor from "@coral-xyz/anchor";
+import { Idl, Program } from "@coral-xyz/anchor";
+import { BankrunProvider } from "anchor-bankrun";
+import {
+  AddedAccount,
+  Clock,
+  ProgramTestContext,
+  startAnchor,
+} from "solana-bankrun";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  Signer,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
+
+/**
+ * Boot an in-process bankrun bank, inject a pool of pre-funded accounts, wire
+ * up a `BankrunProvider`, and build a typed `Program` from its IDL.
+ * `startAnchor(".", [], [])` loads every program in `Anchor.toml` from
+ * `target/deploy`, so build before running.
+ */
+export const initBankrun = async <IDL extends Idl>(idl: IDL) => {
+  const accounts: Keypair[] = [];
+  const accountsToInject: AddedAccount[] = [];
+
+  for (let i = 0; i < 200; i++) {
+    const keypair = Keypair.generate();
+    accounts.push(keypair);
+
+    accountsToInject.push({
+      address: keypair.publicKey,
+      info: {
+        lamports: 1000 * LAMPORTS_PER_SOL,
+        data: Buffer.alloc(0),
+        owner: SystemProgram.programId,
+        executable: false,
+        rentEpoch: 0,
+      },
+    });
+  }
+
+  const context = await startAnchor(".", [], accountsToInject);
+  const provider = new BankrunProvider(context);
+  anchor.setProvider(provider);
+
+  const program = new Program<IDL>(idl, provider);
+
+  return { context, provider, accounts, program };
+};
+
+let latestSlot = 1;
+
+/**
+ * Sign and run a transaction through the bank. Warps a slot first so every
+ * transaction gets a fresh blockhash (avoids "already processed").
+ */
+export const processTransaction = async (
+  ctx: ProgramTestContext,
+  transaction: Transaction,
+  signers: (Keypair | Signer)[],
+) => {
+  ctx.warpToSlot(BigInt(latestSlot + 1));
+  latestSlot++;
+
+  transaction.recentBlockhash = ctx.lastBlockhash;
+  transaction.feePayer = signers[0].publicKey;
+  transaction.sign(...signers);
+
+  await ctx.banksClient.processTransaction(transaction);
+};
+
+/** Set the bank's clock to `timestamp` (unix seconds), keeping slot/epoch. */
+export const timeTravel = async (ctx: ProgramTestContext, timestamp: bigint) => {
+  const clock = await ctx.banksClient.getClock();
+  ctx.setClock(
+    new Clock(
+      clock.slot,
+      clock.epochStartTimestamp,
+      clock.epoch,
+      clock.leaderScheduleEpoch,
+      timestamp,
+    ),
+  );
+};
+
+/** Current on-chain unix timestamp. */
+export const getTime = async (ctx: ProgramTestContext) =>
+  (await ctx.banksClient.getClock()).unixTimestamp;

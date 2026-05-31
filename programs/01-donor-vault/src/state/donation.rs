@@ -1,13 +1,8 @@
 use anchor_lang::prelude::*;
 
-use crate::constants::MAX_MESSAGE_LEN;
-
-
+/// A single donation, stored in its own account (one PDA per donation).
 #[account]
 #[derive(InitSpace)]
 pub struct Donation {
-    pub amount: u64,
-    pub timestamp: i64,
-    #[max_len(MAX_MESSAGE_LEN)]
-    pub message: String,
+    // TODO: add the fields this account needs.
 }

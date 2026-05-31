@@ -1,10 +1,9 @@
 use anchor_lang::prelude::*;
 
-
+/// Per-donor summary — the analogue of indexing `mapping(address => ...)` by
+/// `msg.sender`. One PDA per address.
 #[account]
 #[derive(InitSpace)]
 pub struct DonorRecord {
-    pub donor: Pubkey,
-    pub total: u64,
-    pub donation_count: u64,
+    // TODO: add the fields this account needs.
 }

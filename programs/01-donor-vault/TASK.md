@@ -2,7 +2,7 @@
 
 The Solana/Anchor counterpart of the Ethereum `DonorVault` task. This module
 ships **fully implemented** as the reference example for the template: read it
-to see how an Anchor program, PDAs, dynamically-grown accounts, and a bankrun
+to see how an Anchor program, PDAs, one-account-per-item storage, and a bankrun
 test suite fit together. Later modules (`02`–`06`) are stubs for you to
 implement.
 
@@ -10,8 +10,7 @@ implement.
 
 The contract layer for a charity platform. Anyone can send funds along with a
 short message; the program classifies each donor by their cumulative
-contribution and exposes the views the frontend needs to render a donor's full
-history.
+contribution and stores their full history as fetchable accounts.
 
 ## Ethereum → Solana
 
@@ -24,7 +23,8 @@ The original task is written for Solidity. The faithful Solana translation:
 | `mapping(address => Donation[])`  | a `DonorRecord` PDA per address + one `Donation` PDA per donation     |
 | dynamic storage array             | one fixed-size account per donation, PDA-seeded by `(donor, index)`   |
 | `revert ZeroDonation()`           | `require!(amount > 0, DonorVaultError::ZeroDonation)`                 |
-| `view` functions                  | instructions returning a value, called with `.view()` off-chain       |
+| a `view` that *computes*          | one instruction returning a value, called with `.view()` (`tier_of`)  |
+| a `view` that *reads storage*     | no instruction — the client just fetches the account                  |
 
 On Solana you don't grow one account to hold an unbounded list — you give each
 item its own account. So a donation is its own PDA, seeded by the donor and a
