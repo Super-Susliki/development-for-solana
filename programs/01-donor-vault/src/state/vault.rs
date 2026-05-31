@@ -4,5 +4,5 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Vault {
-    // TODO: add the fields this account needs.
+    pub unique_donor_count: u64,
 }

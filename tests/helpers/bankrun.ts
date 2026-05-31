@@ -13,6 +13,7 @@ import {
   Signer,
   SystemProgram,
   Transaction,
+  TransactionInstruction,
 } from "@solana/web3.js";
 
 /**
@@ -69,6 +70,32 @@ export const processTransaction = async (
   transaction.sign(...signers);
 
   await ctx.banksClient.processTransaction(transaction);
+};
+
+/**
+ * The BanksClient equivalent of Anchor's `.view()`: simulate a *signed*
+ * transaction (bankrun verifies signatures, so `.view()`'s unsigned tx fails)
+ * and return the program's raw return data. Decode it with
+ * `program.coder.types.decode(typeName, data)`.
+ */
+export const simulateReturnData = async (
+  ctx: ProgramTestContext,
+  signers: Keypair[],
+  instructions: TransactionInstruction[],
+): Promise<Buffer> => {
+  ctx.warpToSlot(BigInt(latestSlot + 1));
+  latestSlot++;
+
+  const tx = new Transaction();
+  tx.recentBlockhash = ctx.lastBlockhash;
+  tx.feePayer = signers[0].publicKey;
+  tx.add(...instructions);
+  tx.sign(...signers);
+
+  const result = await ctx.banksClient.simulateTransaction(tx);
+  const data = result.meta?.returnData?.data;
+  if (!data) throw new Error("simulation produced no return data");
+  return Buffer.from(data);
 };
 
 /** Set the bank's clock to `timestamp` (unix seconds), keeping slot/epoch. */

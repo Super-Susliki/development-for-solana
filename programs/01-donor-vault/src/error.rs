@@ -6,8 +6,6 @@ pub enum DonorVaultError {
     ZeroDonation,
     #[msg("message exceeds the maximum allowed length")]
     MessageTooLong,
-    #[msg("donation index out of bounds")]
-    IndexOutOfBounds,
     #[msg("arithmetic overflow")]
     Overflow,
 }

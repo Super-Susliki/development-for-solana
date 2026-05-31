@@ -10,7 +10,7 @@ toolchain:
 | Solana CLI   | `stable` (Agave)          | Build, deploy, local validator, keys |
 | Anchor CLI   | `0.31.1`                  | Framework used by the programs       |
 | Node.js      | LTS (≥ 18)                | Runs the TypeScript test suite       |
-| Yarn         | latest                    | Installs JS dependencies             |
+| npm          | bundled with Node.js      | Installs JS dependencies             |
 
 > The required versions come from `Anchor.toml` (`anchor_version = "0.31.1"`) and
 > `package.json`.
@@ -20,8 +20,8 @@ toolchain:
 ## Quick install (recommended)
 
 The Solana Foundation provides a single script that installs **Rust, Solana CLI,
-Anchor CLI, Node.js, and Yarn** in one shot. This is the easiest path on macOS, Linux,
-and WSL.
+Anchor CLI, and Node.js** (npm ships with Node) in one shot. This is the easiest path on
+macOS, Linux, and WSL.
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash
@@ -31,7 +31,7 @@ After it finishes, restart your terminal (or `source` your shell profile) and ve
 everything is on your `PATH`:
 
 ```bash
-rustc --version && solana --version && anchor --version && node --version && yarn --version
+rustc --version && solana --version && anchor --version && node --version && npm --version
 ```
 
 > ⚠️ This installs the **latest** Anchor. This repo pins **0.31.1** — after installing,
@@ -51,7 +51,7 @@ Install the Xcode command line tools (provides a C compiler, `git`, etc.):
 xcode-select --install
 ```
 
-Homebrew is handy for Node/Yarn but not required.
+Homebrew is handy for Node/npm but not required.
 
 ### Windows
 
@@ -150,25 +150,18 @@ avm use 0.31.1
 anchor --version   # -> anchor-cli 0.31.1
 ```
 
-### 4. Node.js + Yarn
+### 4. Node.js + npm
 
-Install Node.js (LTS ≥ 18). Using [nvm](https://github.com/nvm-sh/nvm):
+Install Node.js (LTS ≥ 18); **npm ships with it**, nothing extra to install. Using
+[nvm](https://github.com/nvm-sh/nvm):
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 # restart your shell, then:
 nvm install --lts
 node --version
+npm --version
 ```
-
-Enable Yarn (bundled with modern Node via Corepack):
-
-```bash
-corepack enable
-yarn --version
-```
-
-(Alternatively: `npm install -g yarn`.)
 
 ---
 
@@ -180,7 +173,7 @@ cargo --version
 solana --version
 anchor --version   # should be 0.31.1
 node --version
-yarn --version
+npm --version
 ```
 
 ---
@@ -191,20 +184,24 @@ From the repository root:
 
 ```bash
 # Install JS dependencies
-yarn install
+npm install
 
 # Build the on-chain programs
 anchor build
 
 # Run the full test suite
-yarn test
+npm test
 
 # Or run a single program's tests, e.g.:
-yarn test:donorVault
+npm run test:donorVault
 ```
 
 Tests use `solana-bankrun`, so they run in-process and **do not require a running local
 validator**.
+
+> The repo ships an `.npmrc` with `legacy-peer-deps=true`, so `npm install` works
+> out of the box. It's needed because `anchor-bankrun@0.5.0` still declares its peer as
+> `@coral-xyz/anchor@^0.30` (which excludes 0.31) even though it works fine with 0.31.1.
 
 ---
 
@@ -217,6 +214,10 @@ validator**.
   (`build-essential`, `pkg-config`, `libssl-dev`, etc.).
 - **`solana` not found after install** — you skipped adding the `export PATH=...` line to
   your shell profile; add it and restart the terminal.
+- **`npm error ERESOLVE` mentioning `anchor-bankrun` / `@coral-xyz/anchor`** — the
+  `.npmrc` (`legacy-peer-deps=true`) normally prevents this. If you removed it, either
+  restore it or run `npm install --legacy-peer-deps`. The conflict is a stale peer range,
+  not a real incompatibility.
 
 ## References
 
