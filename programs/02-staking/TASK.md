@@ -1,10 +1,10 @@
 # 02 — RDDK Staking
 
-A **Solana-native** task (no Ethereum port). Users stake **RDDK** tokens to earn
+Users stake **RDDK** tokens to earn
 **vRDDK**, but they must wait 3 days. vRDDK is the receipt you later burn to get
 your RDDK back.
 
-Unlike `01-donor-vault` (fully implemented), this module ships as a **starter**:
+Unlike `01-donor-vault`, this module ships as a **starter**:
 the design is yours to figure out.
 
 ## What you're given
