@@ -2,8 +2,7 @@
 
 An airdrop with **two independent ways to claim**: prove you're on a list (a
 Merkle proof), or present a signature from a trusted signer. Either way you can
-claim your allocation exactly once. (This is the Solana counterpart of the
-Solidity `05-merkle-airdrop`, and stands on its own.)
+claim your allocation exactly once.
 
 This module ships as a **starter** — the design is yours to figure out.
 

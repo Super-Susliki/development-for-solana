@@ -1,29 +1,15 @@
 import { BN } from "@coral-xyz/anchor";
-import {
-  Ed25519Program,
-  Keypair,
-  PublicKey,
-  TransactionInstruction,
-} from "@solana/web3.js";
+import { Keypair, PublicKey, TransactionInstruction } from "@solana/web3.js";
 
-// Build the Ed25519 precompile instruction that authorizes `claimant` to claim
-// `amount`, signed by `signer`. The message binds the claimant, the amount, and
-// the program, so the signature can't be reused for another recipient or another
-// deployment. `claim_with_signature` reads this instruction back via the
-// Instructions sysvar — put it first in the transaction.
+// TODO(you): build the instruction that authorizes `claimant` to claim
+// `amount`, signed by `signer`, that your `claim_with_signature` will accept.
+// The signed message must bind the claimant, the amount, and this program so a
+// signature cannot be reused for another recipient or another deployment.
 export const buildClaimSignatureIx = (
-  signer: Keypair,
-  claimant: PublicKey,
-  amount: BN,
-  programId: PublicKey,
+  _signer: Keypair,
+  _claimant: PublicKey,
+  _amount: BN,
+  _programId: PublicKey,
 ): TransactionInstruction => {
-  void claimant;
-  const message = Buffer.concat([
-    amount.toArrayLike(Buffer, "le", 8),
-    programId.toBuffer(),
-  ]);
-  return Ed25519Program.createInstructionWithPrivateKey({
-    privateKey: signer.secretKey,
-    message,
-  });
+  throw new Error("TODO: buildClaimSignatureIx");
 };
