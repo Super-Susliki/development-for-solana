@@ -2,10 +2,7 @@ use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum DonorVaultError {
-    #[msg("donation amount must be greater than zero")]
-    ZeroDonation,
-    #[msg("message exceeds the maximum allowed length")]
-    MessageTooLong,
-    #[msg("arithmetic overflow")]
-    Overflow,
+    // TODO: add the errors this program needs.
+    // Hint: a donation can be invalid (think about the amount and the message
+    // length), and a running total can overflow.
 }

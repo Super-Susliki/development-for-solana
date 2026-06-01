@@ -9,7 +9,7 @@ toolchain:
 | Rust + Cargo | latest stable             | Compiles the on-chain programs       |
 | Solana CLI   | `stable` (Agave)          | Build, deploy, local validator, keys |
 | Anchor CLI   | `0.31.1`                  | Framework used by the programs       |
-| Node.js      | LTS (≥ 18)                | Runs the TypeScript test suite       |
+| Node.js      | LTS (≥ 20, 22 recommended) | Runs the TypeScript test suite      |
 | npm          | bundled with Node.js      | Installs JS dependencies             |
 
 > The required versions come from `Anchor.toml` (`anchor_version = "0.31.1"`) and
@@ -152,7 +152,7 @@ anchor --version   # -> anchor-cli 0.31.1
 
 ### 4. Node.js + npm
 
-Install Node.js (LTS ≥ 18); **npm ships with it**, nothing extra to install. Using
+Install Node.js (LTS ≥ 20); **npm ships with it**, nothing extra to install. Using
 [nvm](https://github.com/nvm-sh/nvm):
 
 ```bash

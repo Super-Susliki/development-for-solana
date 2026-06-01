@@ -1,10 +1,10 @@
 # Solana Template — Anchor + Rust
 
-The Solana counterpart of the Solidity course template, rebuilt with
-[Anchor](https://www.anchor-lang.com/) and Rust. A numbered series of tasks with
-the same "read the brief, implement, test" workflow — but as on-chain
-**programs** tested with [bankrun](https://kevinheavey.github.io/solana-bankrun/)
-instead of a local validator.
+An [Anchor](https://www.anchor-lang.com/) + Rust learning template — a numbered
+series of tasks with a "read the brief, implement, test" workflow, built as
+on-chain **programs** and tested with
+[bankrun](https://kevinheavey.github.io/solana-bankrun/): a fast in-process bank,
+no local validator.
 
 ## Requirements
 
@@ -21,6 +21,9 @@ solana --version   # 2.x
 node --version     # v20+
 ```
 
+New here? **[INSTALL.md](INSTALL.md)** walks through installing the whole
+toolchain (Rust, Solana CLI, Anchor, Node) from scratch.
+
 ## Layout
 
 ```
@@ -32,7 +35,7 @@ node --version     # v20+
 ├── .nvmrc
 ├── migrations/deploy.ts
 ├── programs/                # one Anchor program per task
-│   ├── 01-donor-vault/      # ← implemented reference example
+│   ├── 01-donor-vault/      # ← start here (first task; ships with full tests)
 │   │   ├── src/             # lib.rs + constants/error/state/instructions
 │   │   └── TASK.md          # brief — read this first
 │   ├── 02-staking/          # starter
@@ -53,22 +56,24 @@ them, so a workspace-wide `anchor build` only succeeds once every task is done.)
 
 | #   | Task                                               | Program crate    | Status                  |
 | --- | -------------------------------------------------- | ---------------- | ----------------------- |
-| 01  | [`01-donor-vault`](programs/01-donor-vault/)       | `donor_vault`    | implemented (reference) |
+| 01  | [`01-donor-vault`](programs/01-donor-vault/)       | `donor_vault`    | starter (start here)    |
 | 02  | [`02-staking`](programs/02-staking/)               | `staking`        | starter                 |
 | 03  | _reserved_                                         | —                | —                       |
 | 04  | [`04-merkle-airdrop`](programs/04-merkle-airdrop/) | `merkle_airdrop` | starter                 |
 | 05  | [`05-raffle`](programs/05-raffle/)                 | `raffle`         | starter                 |
 
-`01-donor-vault` is fully implemented as the reference example. The rest ship as
-**starters** — module skeletons with `// TODO`s for the accounts, state, errors,
-and logic, plus a happy-path test to build toward. They don't compile until you
-fill them in. (`03` is intentionally left open for a future task.)
+Every task is a **starter** — a module skeleton with `// TODO`s for the
+accounts, state, errors, and logic. Start with `01-donor-vault`: its brief is the
+most detailed and it ships with its **complete** test suite, so you only write
+the program. The later tasks give one happy-path test and leave the rest to you.
+Starters don't compile until you fill them in. (`03` is intentionally left open
+for a future task.)
 
 ## Getting started
 
 ```bash
 npm install
-npm run test:donorVault   # builds donor_vault, then runs its bankrun suite
+npm run test:donorVault   # build + run 01's suite (red until you implement the program)
 ```
 
 Each task has its own script that builds just that program and runs its suite:
